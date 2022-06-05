@@ -1,5 +1,5 @@
 {
-  "name": "@perfood/capacitor-healthkit",
+  "name": "@pxljoy.io/capacitor-healthkit",
   "version": "1.0.1",
   "description": "Capacitor plugin to read data from and write data to Apple Health",
   "main": "dist/plugin.cjs.js",
@@ -9,9 +9,9 @@
   "files": [
     "dist/",
     "ios/Plugin/",
-    "PerfoodCapacitorHealthkit.podspec"
+    "Pxljoy.ioCapacitorHealthkit.podspec"
   ],
-  "author": "Perfood",
+  "author": "pxljoy.io",
   "license": "MIT",
   "repository": {
     "type": "git",

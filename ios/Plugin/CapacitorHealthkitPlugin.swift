@@ -92,7 +92,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         }
         return types
     }
-    
+
     func returnWorkoutActivityTypeValueDictionnary(activityType: HKWorkoutActivityType) -> String {
          // from https://github.com/georgegreenoflondon/HKWorkoutActivityType-Descriptions/blob/master/HKWorkoutActivityType%2BDescriptions.swift
          switch activityType {
@@ -254,7 +254,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
              return "Other"
          }
      }
-    
+
     func getTimeZoneString(sample: HKSample? = nil, shouldReturnDefaultTimeZoneInExceptions _: Bool = true) -> String {
         var timeZone: TimeZone?
         if let metaDataTimeZoneValue = sample?.metadata?[HKMetadataKeyTimeZone] as? String {
@@ -387,7 +387,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     print("Error: unknown unit type")
                 }
 
-                var value: Double 
+                var value: Double
                 let quantitySD: NSDate
                 let quantityED: NSDate
                 quantitySD = sample.startDate as NSDate
@@ -417,7 +417,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         return formatter.date(from: inputDate)!
     }
 
-    
+
     @objc func requestAuthorization(_ call: CAPPluginCall) {
         if !HKHealthStore.isHealthDataAvailable() {
             return call.reject("Health data not available")
@@ -467,8 +467,10 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         guard let sampleType: HKSampleType = getSampleType(sampleName: _sampleName) else {
             return call.reject("Error in sample name")
         }
+        // SortDescriptor for sorting descending. This works to get "latest" data with limit: 1
+        // + pxljoy addition
+        // we could also make this some sort of option/dict like "latest", "oldest" etc.
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
-
         let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: [sortDescriptor]) {
             _, results, _ in
             guard let output: [[String: Any]] = self.generateOutput(sampleName: _sampleName, results: results) else {
@@ -481,7 +483,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         }
         healthStore.execute(query)
     }
-    
+
     @objc func isAvailable(_ call: CAPPluginCall) {
         if HKHealthStore.isHealthDataAvailable() {
             return call.resolve()
@@ -573,7 +575,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             call.resolve(output)
         }
     }
-      
+
     func queryHKitSampleTypeSpecial(sampleName: String, startDate: Date, endDate: Date, limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.strictStartDate)
 
