@@ -469,7 +469,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         }
         // SortDescriptor for sorting descending. This works to get "latest" data with limit: 1
         // + pxljoy addition
-        // we could also make this some sort of option/dict like "latest", "oldest" etc.
+        // we could also make this some sort of option/dict like "latest", "oldest"
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: [sortDescriptor]) {
             _, results, _ in
@@ -482,6 +482,42 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             ])
         }
         healthStore.execute(query)
+    }
+
+    @objc func createWorkout(_ call: CAPPluginCall) {
+        guard let startDateString = call.options["startDate"] as? String else {
+            return call.reject("Must provide startDate")
+        }
+        guard let endDateString = call.options["endDate"] as? String else {
+            return call.reject("Must provide endDate")
+        }
+        guard let _calories = call.options["calories"] as? Double else {
+            return call.reject("Must provide calories")
+        }
+
+        let _startDate = getDateFromString(inputDate: startDateString)
+        let _endDate = getDateFromString(inputDate: endDateString)
+        let totalEnergyBurned = HKQuantity(unit: HKUnit.Calorie, doubleValue: _calories);
+        let workout = HKWorkout(
+            activityType: HKWorkoutActivityType.traditionalStrengthTraining,
+            startDate: _startDate,
+            endDate: _endDate,
+            totalEnergyBurned: totalEnergyBurned
+        )
+
+        healthStore.saveObject(workout) {
+            (success: Bool, error: NSError?) -> Void in
+            if success {
+                // Workout was successfully saved
+                call.resolve([
+                    "created": true
+                ])
+            }
+            else {
+                // Workout was not successfully saved
+                return call.reject("Workout not saved")
+            }
+        }
     }
 
     @objc func isAvailable(_ call: CAPPluginCall) {

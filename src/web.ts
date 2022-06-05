@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { WebPlugin } from '@capacitor/core';
 
-import type { EditionQuery, AuthorizationQueryOptions, CapacitorHealthkitPlugin, MultipleQueryOptions, SingleQueryOptions } from './definitions';
+import type { EditionQuery, AuthorizationQueryOptions, CapacitorHealthkitPlugin, MultipleQueryOptions, SingleQueryOptions, WorkoutData } from './definitions';
 
 export class CapacitorHealthkitWeb
   extends WebPlugin
@@ -12,6 +12,9 @@ export class CapacitorHealthkitWeb
   }
 
   async queryHKitSampleType(_queryOptions: SingleQueryOptions): Promise<any>{
+    throw this.unimplemented('Not implemented on web.');
+  }
+  async createWorkout(_workout: WorkoutData): Promise<any>{
     throw this.unimplemented('Not implemented on web.');
   }
 
@@ -27,7 +30,7 @@ export class CapacitorHealthkitWeb
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async multipleIsEditionAuthorized(): Promise<void>{ 
+  async multipleIsEditionAuthorized(): Promise<void>{
     throw this.unimplemented('Not implemented on web.');
   }
 }

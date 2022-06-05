@@ -2,6 +2,7 @@ export interface CapacitorHealthkitPlugin {
   requestAuthorization(authOptions: AuthorizationQueryOptions): Promise<void>;
   queryHKitSampleType<T>(queryOptions:SingleQueryOptions): Promise<QueryOutput<T>>;
   isAvailable(): Promise<void>;
+  createWorkout(workout:WorkoutData): Promise<void>;
   multipleQueryHKitSampleType(queryOptions:MultipleQueryOptions): Promise<any>;
   isEditionAuthorized(queryOptions: EditionQuery): Promise<void>;
   multipleIsEditionAuthorized(): Promise<void>;
@@ -19,6 +20,11 @@ export interface BaseData {
   sourceBundleId: string;
   duration: number;
 }
+export interface WorkoutData {
+  startDate: string;
+  endDate: string;
+  calories: number;
+}
 export interface SleepData extends BaseData  {
   sleepState: string;
   timeZone: string;
@@ -34,7 +40,7 @@ export interface ActivityData extends BaseData {
 }
 
 export interface OtherData extends BaseData {
-  unitName: string; 
+  unitName: string;
   value: number;
 }
 
@@ -59,7 +65,7 @@ export interface AuthorizationQueryOptions {
 }
 
 export interface EditionQuery {
-  sampleName: string;  
+  sampleName: string;
 }
 
 export enum SampleNames {
