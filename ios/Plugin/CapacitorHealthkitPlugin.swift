@@ -485,6 +485,13 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     }
 
     @objc func createWorkout(_ call: CAPPluginCall) {
+
+        healthStore.requestAuthorization(toShare: [HKObjectType.workoutType()], read: [HKObjectType.workoutType()]) { success, _ in
+            if !success {
+                call.reject("Could not get permission")
+                return
+            }
+        }
         guard let startDateString = call.options["startDate"] as? String else {
             return call.reject("Must provide startDate")
         }
@@ -497,16 +504,20 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
 
         let _startDate = getDateFromString(inputDate: startDateString)
         let _endDate = getDateFromString(inputDate: endDateString)
-        let totalEnergyBurned = HKQuantity(unit: HKUnit.Calorie, doubleValue: _calories);
+        let totalEnergyBurned = HKQuantity(unit: HKUnit.largeCalorie(), doubleValue: _calories);
         let workout = HKWorkout(
             activityType: HKWorkoutActivityType.traditionalStrengthTraining,
-            startDate: _startDate,
-            endDate: _endDate,
-            totalEnergyBurned: totalEnergyBurned
+            start: _startDate,
+            end: _endDate,
+            workoutEvents: nil,
+            totalEnergyBurned: totalEnergyBurned,
+            totalDistance: nil,
+            device: nil,
+            metadata: nil
         )
 
-        healthStore.saveObject(workout) {
-            (success: Bool, error: NSError?) -> Void in
+        healthStore.save(workout) {
+            (success: Bool, error: Error?) -> Void in
             if success {
                 // Workout was successfully saved
                 call.resolve([
